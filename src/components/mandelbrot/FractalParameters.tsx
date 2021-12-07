@@ -35,14 +35,24 @@ class FractalParameters extends React.Component<FractalInterface, {}> {
     }
 
     render() {
-        // @ts-ignore
         return (
 
-            <Box component="form" noValidate sx={{mt: 1}}>
-                <Typography variant="h6" gutterBottom>
-                    Mandelbrot set parameters
-                </Typography>
+            <Box component="form" noValidate>
                 <Grid container direction={"column"} spacing={3}>
+                    <Grid item xs={8}>
+                        <Button
+                            type="button"
+                            variant="contained"
+                            fullWidth
+                            sx={{mb: 2}}
+                            onClick={() => {
+                                console.log(this.state);
+                                this.props.onChangeParams(this.state)
+                            }}
+                        >
+                            Compute
+                        </Button>
+                    </Grid>
                     <Grid item xs={8}>
                         <TextField id="c0" label="c0"
                                    fullWidth
@@ -99,20 +109,7 @@ class FractalParameters extends React.Component<FractalInterface, {}> {
                     </Grid>
 
                     
-                    <Grid item xs={8}>
-                        <Button
-                            type="button"
-                            variant="contained"
-                            fullWidth
-                            sx={{mt: 3, mb: 2}}
-                            onClick={() => {
-                                console.log(this.state);
-                                this.props.onChangeParams(this.state)
-                            }}
-                        >
-                            Submit
-                        </Button>
-                    </Grid>
+
                 </Grid></Box>
 
         );
