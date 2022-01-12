@@ -1,4 +1,5 @@
 import { Crop } from "react-image-crop";
+import {ColorGradientProp} from "../gradient/ColorGradient";
 
 export default interface FractalInterface {
     c0: number;
@@ -11,4 +12,5 @@ export default interface FractalInterface {
     imageCompression: number;
     onChangeParams: (params: FractalInterface) => void;
     crop: Crop;
+    gradient: ColorGradientProp;
 }

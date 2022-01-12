@@ -1,8 +1,7 @@
-import React, {FormEvent} from 'react';
+import React from 'react';
 import './Mandelbrot.css';
 import FractalInterface from "./FractalInterface";
 import {Button, Grid, InputLabel, Select, Stack, TextField} from "@mui/material";
-import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import "./FractalParameters.css"
 import { MenuItem } from '@mui/material';
@@ -46,7 +45,6 @@ class FractalParameters extends React.Component<FractalInterface, {}> {
                             fullWidth
                             sx={{mb: 2}}
                             onClick={() => {
-                                console.log(this.state);
                                 this.props.onChangeParams(this.state)
                             }}
                         >

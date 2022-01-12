@@ -5,7 +5,8 @@
     import {Container, Grid, Paper} from '@mui/material';
     import ReactCrop, {Crop} from 'react-image-crop';
     import 'react-image-crop/dist/ReactCrop.css';
-    import {ColorGradient} from "../gradient/ColorGradient";
+    import {ColorGradient, ColorGradientProp} from "../gradient/ColorGradient";
+    import tinycolor from "tinycolor2";
 
     class MandelbrotImage extends React.Component<{}, FractalInterface> {
         onCropComplete: ((crop: Crop, percentageCrop: Crop) => void) | undefined;
@@ -17,6 +18,12 @@
         constructor(props: FractalInterface) {
             super(props);
             this.child = React.createRef();
+            let defaultColorGradient: ColorGradientProp = {
+                iteration1: 0,
+                color1: tinycolor("#000000").toRgb(),
+                iteration2: 200,
+                color2: tinycolor("#ffffff").toRgb(),
+            };
             this.state = {
                 c0: props.c0,
                 c0i: props.c0i,
@@ -34,6 +41,7 @@
                     width: 0,
                     height: 0,
                 },
+                gradient: defaultColorGradient,
             };
 
         }
@@ -79,7 +87,11 @@
                 + "&max_iterations=" + this.state.maxIterations
                 + "&w=" + this.state.width
                 + "&h=" + this.state.height
-                + "&image_compression=" + this.state.imageCompression;
+                + "&image_compression=" + this.state.imageCompression
+                + "&i0_color=%23" + tinycolor( this.state.gradient.color1).toHex()
+                + "&i0_iteration=" + this.state.gradient.iteration1
+                + "&i1_color=%23" + tinycolor(this.state.gradient.color2).toHex()
+                + "&i1_iteration=" + this.state.gradient.iteration2
             return url;
         }
 
@@ -106,6 +118,13 @@
                 imageCompression: this.state.imageCompression,
             })
         };
+
+        handleGradientChange = (gradient: ColorGradientProp) => {
+            console.log("Gradient: " + gradient.color1.b);
+            console.log("Gradient: " + gradient.iteration1);
+            this.setState({gradient});
+            this.render();
+        }
 
         render() {
 
@@ -145,6 +164,11 @@
                                     }}
                                 >
                                     <ColorGradient
+                                        iteration1 = {this.state.gradient.iteration1}
+                                        color1 = { tinycolor(this.state.gradient.color1).toRgb() }
+                                        iteration2 = {this.state.gradient.iteration2}
+                                        color2 = { tinycolor(this.state.gradient.color2).toRgb() }
+                                        onChange={this.handleGradientChange}
                                     />
                                 </Paper>
                             </Grid>
@@ -164,6 +188,7 @@
                                         imageCompression={this.state.imageCompression}
                                         crop={this.state.crop}
                                         onChangeParams={(params: FractalInterface) => this.rerender(params)}
+                                        gradient={this.state.gradient}
                                     />
                                 </Paper>
                             </Grid>
@@ -172,6 +197,8 @@
                 </Container>
             );
         }
+
+
     }
 
     export default MandelbrotImage;

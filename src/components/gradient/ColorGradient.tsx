@@ -1,32 +1,50 @@
 import React from "react";
 import tinygradient from "tinygradient";
-import {SketchPicker, ColorResult, RGBColor} from "react-color";
+import {RGBColor} from "react-color";
 import {Classes} from "reactcss";
-import {Color} from '../color/Color';
+import {ColorProp, ColorState, IterationColor} from '../iteration-color/IterationColor';
 import tinycolor from "tinycolor2";
 
-export class ColorGradient extends React.Component {
+export type GradientChangeHandler = (state: ColorGradientProp) => void;
 
-    color1: RGBColor = {
-        r: 0,
-        g: 0,
-        b: 0,
-    }
-    color2: RGBColor = {
-        r: 0,
-        g: 0,
-        b: 255,
-    }
-    state = {
-        color1: this.color1,
-        color2: this.color2,
+export type ColorGradientProp = {
+    iteration1: number,
+    iteration2: number,
+    color1: RGBColor,
+    color2: RGBColor,
+    onChange?: GradientChangeHandler | undefined;
+};
+
+type ColorGradientState = {
+    iteration1: number,
+    iteration2: number,
+    color1: RGBColor,
+    color2: RGBColor,
+};
+
+export class ColorGradient extends React.Component<ColorGradientProp, ColorGradientState>  {
+
+    state: ColorGradientState = {
+        iteration1: this.props.iteration1,
+        iteration2: this.props.iteration2,
+        color1: this.props.color1,
+        color2: this.props.color2,
     };
 
-    handleChange1 = (color: ColorResult) => {
-        this.setState({color1: color.rgb})
+    handleChange1 = (prop: ColorProp) => {
+        this.setState({color1: tinycolor(prop.color).toRgb()})
+        this.setState({iteration1: +prop.iteration})
+
+        if (this.props.onChange) {
+            this.props.onChange(this.state);
+        }
     };
-    handleChange2 = (color: ColorResult) => {
-        this.setState({color2: color.rgb})
+    handleChange2 = (prop: ColorProp) => {
+        this.setState({color2: tinycolor(prop.color).toRgb()})
+        this.setState({iteration2: +prop.iteration})
+        if (this.props.onChange) {
+            this.props.onChange(this.state);
+        }
     };
 
 
@@ -38,20 +56,17 @@ export class ColorGradient extends React.Component {
                 <div style={{background: gradient}}>
                     &nbsp;
                 </div>
-                <div style={{width: '100%', border: 5}}>
-                    <div style={{float: 'left'}}>
-                        <Color
-                            color = { tinycolor(this.state.color1).toRgb() }
-                            onChange={this.handleChange1}
-                        />
-                    </div>
-                    <div style={{float: 'right'}}>
-                        <Color
-                            color = { tinycolor(this.state.color2).toRgb() }
-                            onChange={this.handleChange2}
-                        />
-                    </div>
-                </div>
+                <IterationColor
+                    iteration = {this.state.iteration1}
+                    color = { tinycolor(this.state.color1).toRgb() }
+                    onChange={this.handleChange1}
+                />
+                <IterationColor
+                    iteration = {this.state.iteration2}
+                    color = { tinycolor(this.state.color2).toRgb() }
+                    onChange={this.handleChange2}
+                />
+
             </div>
         )
     }
